@@ -9,6 +9,9 @@ namespace geekGame
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         Texture2D player;
+        Texture2D playerRight;
+        Texture2D playerLeft;
+        Texture2D playerBack;
 
         //a timer that stores miliseconds
         float timer;
@@ -53,6 +56,13 @@ namespace geekGame
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             player = Content.Load<Texture2D>("geekWalkingForward");
+            playerRight = Content.Load<Texture2D>("geekWalkingRight");
+            playerLeft = Content.Load<Texture2D>("geekWalkingRight");
+            playerBack = Content.Load<Texture2D>("geekWalkingBackward");
+
+
+
+
 
             // TODO: use this.Content to load your game content here
         }
@@ -115,9 +125,18 @@ namespace geekGame
             //source rectangle for sprite sheet
             //Rectangle sourceRectangle = new Rectangle(0, 32, 25, 32);
 
+
+            //forward animation
             _spriteBatch.Draw(player, new Vector2(300, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
             //public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth);
 
+            //backward animation 
+            _spriteBatch.Draw(playerBack, new Vector2(400, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+
+            //right animation 
+            _spriteBatch.Draw(playerRight, new Vector2(500, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+            //left animation 
+            _spriteBatch.Draw(playerRight, new Vector2(600, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.FlipHorizontally, 0f);
 
             _spriteBatch.End();
 
