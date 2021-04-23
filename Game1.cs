@@ -8,12 +8,16 @@ namespace geekGame
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        Texture2D[] players;
+
         Texture2D player;
         Texture2D playerRight;
         Texture2D playerLeft;
         Texture2D playerBack;
-        int playerIndex;
+        
+        bool movingLeft;
+        bool movingRight;
+        bool movingForward;
+        bool movingDown;
         
 
         //a timer that stores miliseconds
@@ -25,7 +29,8 @@ namespace geekGame
         // These bytes tell the spriteBatch.Draw() what sourceRectangle to display.
         byte previousAnimationIndex;
         byte currentAnimationIndex;
-        KeyboardState kstate = Keyboard.GetState();
+        KeyboardState currentState;
+        KeyboardState previousState;
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -48,15 +53,17 @@ namespace geekGame
             sourceRectangles[1] = new Rectangle(35, 0, 25, 32);//right sprint
             //sourceRectangles[3] = new Rectangle(0, 32, 25, 32); //standing still
             sourceRectangles[2] = new Rectangle(35, 32, 25, 32);//left sprite.
-
-            players = new Texture2D[4];
             
 
             // This tells the animation to start on the left-side sprite.
             previousAnimationIndex = 2;
             currentAnimationIndex = 0;
 
-            playerIndex = 0;
+            movingDown = false;
+            movingForward = false;
+            movingLeft = false;
+            movingRight = false;
+
             base.Initialize();
         }
 
@@ -68,10 +75,7 @@ namespace geekGame
             playerRight = Content.Load<Texture2D>("geekWalkingRight");
             playerLeft = Content.Load<Texture2D>("geekWalkingRight");
             playerBack = Content.Load<Texture2D>("geekWalkingBackward");
-            players[0] = player;
-            players[1] = playerBack;
-            players[2] = playerRight;
-            players[3] = playerLeft;
+           
 
 
 
@@ -82,7 +86,8 @@ namespace geekGame
 
         protected override void Update(GameTime gameTime)
         {
-            
+            previousState = currentState;
+            currentState = Keyboard.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -123,25 +128,31 @@ namespace geekGame
             }
 
             //keyboard stuff
-            if (kstate.IsKeyDown(Keys.Up))
+            if (currentState.IsKeyDown(Keys.Up))
             {
-                playerIndex = 1;
+                movingDown = true;
 
             }
-            else if (kstate.IsKeyDown(Keys.Down))
+            else if (currentState.IsKeyDown(Keys.Down))
             {
-                playerIndex = 0;
+                movingForward = true;
             }
-            else if (kstate.IsKeyDown(Keys.Right))
+            else if (currentState.IsKeyDown(Keys.Right))
             {
-                playerIndex = 2;
+                movingRight = true;
             }
-            else if (kstate.IsKeyDown(Keys.Left))
+            else if (currentState.IsKeyDown(Keys.Left))
             {
-                playerIndex = 3;
+                movingLeft = true;
             }
             else
-                playerIndex = 0;
+            {
+                movingDown = false;
+                movingForward = false;
+                movingLeft = false;
+                movingRight = false;
+            }
+
 
 
 
@@ -175,7 +186,25 @@ namespace geekGame
             //left animation 
             _spriteBatch.Draw(playerRight, new Vector2(600, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.FlipHorizontally, 0f);
 
-            _spriteBatch.Draw(players[playerIndex], new Vector2(300, 200), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+
+            if (movingDown)
+            {
+                _spriteBatch.Draw(playerBack, new Vector2(400, 200), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+            }
+            else if (movingForward)
+            {
+                _spriteBatch.Draw(player, new Vector2(400, 200), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+            }
+            else if (movingRight)
+            {
+                _spriteBatch.Draw(playerRight, new Vector2(400, 200), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+            }
+            else if (movingLeft)
+            {
+                _spriteBatch.Draw(playerRight, new Vector2(400, 200), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.FlipHorizontally, 0f);
+            }
+            else
+                _spriteBatch.Draw(player, new Vector2(400, 200), sourceRectangles[0], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
 
 
 
