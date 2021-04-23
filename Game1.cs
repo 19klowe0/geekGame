@@ -8,10 +8,13 @@ namespace geekGame
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        Texture2D[] players;
         Texture2D player;
         Texture2D playerRight;
         Texture2D playerLeft;
         Texture2D playerBack;
+        int playerIndex;
+        
 
         //a timer that stores miliseconds
         float timer;
@@ -22,6 +25,7 @@ namespace geekGame
         // These bytes tell the spriteBatch.Draw() what sourceRectangle to display.
         byte previousAnimationIndex;
         byte currentAnimationIndex;
+        KeyboardState kstate = Keyboard.GetState();
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
@@ -38,16 +42,21 @@ namespace geekGame
             timer = 0;
             // Set an initial threshold of 250ms, you can change this to alter the speed of the animation (lower number = faster animation).
             threshold = 150;
-            // Three sourceRectangles contain the coordinates of Alex's three down-facing sprites on the charaset.
+            // Three sourceRectangles contain the coordinates of geeks's three down-facing sprites on the charaset.
             sourceRectangles = new Rectangle[3];
             sourceRectangles[0] = new Rectangle(3, 0, 25, 32); //standing still
             sourceRectangles[1] = new Rectangle(35, 0, 25, 32);//right sprint
             //sourceRectangles[3] = new Rectangle(0, 32, 25, 32); //standing still
             sourceRectangles[2] = new Rectangle(35, 32, 25, 32);//left sprite.
 
+            players = new Texture2D[4];
+            
+
             // This tells the animation to start on the left-side sprite.
             previousAnimationIndex = 2;
             currentAnimationIndex = 0;
+
+            playerIndex = 0;
             base.Initialize();
         }
 
@@ -59,6 +68,10 @@ namespace geekGame
             playerRight = Content.Load<Texture2D>("geekWalkingRight");
             playerLeft = Content.Load<Texture2D>("geekWalkingRight");
             playerBack = Content.Load<Texture2D>("geekWalkingBackward");
+            players[0] = player;
+            players[1] = playerBack;
+            players[2] = playerRight;
+            players[3] = playerLeft;
 
 
 
@@ -69,6 +82,7 @@ namespace geekGame
 
         protected override void Update(GameTime gameTime)
         {
+            
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
@@ -108,6 +122,29 @@ namespace geekGame
                 timer += (float)gameTime.ElapsedGameTime.TotalMilliseconds;
             }
 
+            //keyboard stuff
+            if (kstate.IsKeyDown(Keys.Up))
+            {
+                playerIndex = 1;
+
+            }
+            else if (kstate.IsKeyDown(Keys.Down))
+            {
+                playerIndex = 0;
+            }
+            else if (kstate.IsKeyDown(Keys.Right))
+            {
+                playerIndex = 2;
+            }
+            else if (kstate.IsKeyDown(Keys.Left))
+            {
+                playerIndex = 3;
+            }
+            else
+                playerIndex = 0;
+
+
+
 
             base.Update(gameTime);
         }
@@ -137,6 +174,11 @@ namespace geekGame
             _spriteBatch.Draw(playerRight, new Vector2(500, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
             //left animation 
             _spriteBatch.Draw(playerRight, new Vector2(600, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.FlipHorizontally, 0f);
+
+            _spriteBatch.Draw(players[playerIndex], new Vector2(300, 200), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+
+
+
 
             _spriteBatch.End();
 
