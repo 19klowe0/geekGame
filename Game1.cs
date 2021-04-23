@@ -18,6 +18,9 @@ namespace geekGame
         bool movingRight;
         bool movingForward;
         bool movingDown;
+
+        Vector2 playerPos;
+        float playerSpeed;
         
 
         //a timer that stores miliseconds
@@ -43,6 +46,8 @@ namespace geekGame
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            //player position 
+            playerPos = new Vector2(0, 0);
 
             timer = 0;
             // Set an initial threshold of 250ms, you can change this to alter the speed of the animation (lower number = faster animation).
@@ -131,18 +136,22 @@ namespace geekGame
             if (currentState.IsKeyDown(Keys.Up))
             {
                 movingDown = true;
+                playerPos += new Vector2(0, -2);
 
             }
             else if (currentState.IsKeyDown(Keys.Down))
             {
+                playerPos += new Vector2(0, 2);
                 movingForward = true;
             }
             else if (currentState.IsKeyDown(Keys.Right))
             {
+                playerPos += new Vector2(2, 0);
                 movingRight = true;
             }
             else if (currentState.IsKeyDown(Keys.Left))
             {
+                playerPos += new Vector2(-2, 0);
                 movingLeft = true;
             }
             else
@@ -168,43 +177,45 @@ namespace geekGame
             _spriteBatch.Begin();
 
             //Just drawing the Sprite
-            _spriteBatch.Draw(player, new Vector2(100, 100), Color.White);
+            //_spriteBatch.Draw(player, new Vector2(100, 100), Color.White);
 
+
+            // old code for sprite drawing
+            #region
             //source rectangle for sprite sheet
             //Rectangle sourceRectangle = new Rectangle(0, 32, 25, 32);
 
+            ////forward animation
+            //_spriteBatch.Draw(player, new Vector2(300, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+            ////public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth);
 
-            //forward animation
-            _spriteBatch.Draw(player, new Vector2(300, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
-            //public void Draw(Texture2D texture, Vector2 position, Rectangle? sourceRectangle, Color color, float rotation, Vector2 origin, float scale, SpriteEffects effects, float layerDepth);
+            ////backward animation 
+            //_spriteBatch.Draw(playerBack, new Vector2(400, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
 
-            //backward animation 
-            _spriteBatch.Draw(playerBack, new Vector2(400, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
-
-            //right animation 
-            _spriteBatch.Draw(playerRight, new Vector2(500, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
-            //left animation 
-            _spriteBatch.Draw(playerRight, new Vector2(600, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.FlipHorizontally, 0f);
-
+            ////right animation 
+            //_spriteBatch.Draw(playerRight, new Vector2(500, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+            ////left animation 
+            //_spriteBatch.Draw(playerRight, new Vector2(600, 100), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.FlipHorizontally, 0f);
+            #endregion
 
             if (movingDown)
             {
-                _spriteBatch.Draw(playerBack, new Vector2(400, 200), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+                _spriteBatch.Draw(playerBack, playerPos, sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
             }
             else if (movingForward)
             {
-                _spriteBatch.Draw(player, new Vector2(400, 200), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+                _spriteBatch.Draw(player, playerPos, sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
             }
             else if (movingRight)
             {
-                _spriteBatch.Draw(playerRight, new Vector2(400, 200), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+                _spriteBatch.Draw(playerRight, playerPos, sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
             }
             else if (movingLeft)
             {
-                _spriteBatch.Draw(playerRight, new Vector2(400, 200), sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.FlipHorizontally, 0f);
+                _spriteBatch.Draw(playerRight, playerPos, sourceRectangles[currentAnimationIndex], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.FlipHorizontally, 0f);
             }
             else
-                _spriteBatch.Draw(player, new Vector2(400, 200), sourceRectangles[0], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+                _spriteBatch.Draw(player, playerPos, sourceRectangles[0], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
 
 
 
