@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 
 namespace geekGame
 {
@@ -15,13 +16,24 @@ namespace geekGame
         Texture2D playerRight;
         Texture2D playerLeft;
         Texture2D playerBack;
+
+        Texture2D barrierColorful;
+
+        Vector2[] barrierPos;
+        
+
+       
         
         bool movingLeft;
         bool movingRight;
         bool movingForward;
         bool movingDown;
 
+        bool personHit;
+
         Vector2 playerPos;
+        
+
         float playerSpeed;
         
 
@@ -49,7 +61,7 @@ namespace geekGame
         {
             // TODO: Add your initialization logic here
             //player position 
-            playerPos = new Vector2(0, 0);
+            playerPos = new Vector2(100,100);
 
             timer = 0;
             // Set an initial threshold of 250ms, you can change this to alter the speed of the animation (lower number = faster animation).
@@ -60,7 +72,19 @@ namespace geekGame
             sourceRectangles[1] = new Rectangle(35, 0, 25, 32);//right sprint
             //sourceRectangles[3] = new Rectangle(0, 32, 25, 32); //standing still
             sourceRectangles[2] = new Rectangle(35, 32, 25, 32);//left sprite.
-            
+            barrierPos = new Vector2[3];
+
+            barrierPos[0] = new Vector2(0, 0);
+            barrierPos[1] = new Vector2(0, 200);
+            barrierPos[2] = new Vector2(0, 400);
+
+            personHit = false;
+
+
+
+
+
+
 
             // This tells the animation to start on the left-side sprite.
             previousAnimationIndex = 2;
@@ -82,6 +106,8 @@ namespace geekGame
             playerRight = Content.Load<Texture2D>("geekWalkingRight");
             playerLeft = Content.Load<Texture2D>("geekWalkingRight");
             playerBack = Content.Load<Texture2D>("geekWalkingBackward");
+
+            barrierColorful = Content.Load<Texture2D>("barrierColorful");
            
 
 
@@ -97,6 +123,7 @@ namespace geekGame
             currentState = Keyboard.GetState();
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            
 
             // TODO: Add your update logic here
 
@@ -165,7 +192,20 @@ namespace geekGame
             }
 
 
-
+            //for( int i = 0; i< barrierPos.Length; i++)
+            //{
+                Rectangle blockRectangle = new Rectangle((int)barrierPos[2].X, (int)barrierPos[2].Y, 64, 64);
+               
+                if (sourceRectangles[0].Intersects(blockRectangle) || sourceRectangles[1].Intersects(blockRectangle)|| sourceRectangles[2].Intersects(blockRectangle))
+                {
+                    personHit = true;
+                }
+                //else
+                //{
+                //    personHit = false;
+                //}
+                    
+            //}
 
 
             base.Update(gameTime);
@@ -173,7 +213,12 @@ namespace geekGame
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            if (personHit)
+            {
+                GraphicsDevice.Clear(Color.Red);
+            }
+            else 
+                GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
@@ -218,6 +263,12 @@ namespace geekGame
             }
             else
                 _spriteBatch.Draw(player, playerPos, sourceRectangles[0], Color.White, 0f, Vector2.Zero, 2f, SpriteEffects.None, 0f);
+
+            for (int b = 0; b < barrierPos.Length; b++)
+            {
+                _spriteBatch.Draw(barrierColorful, barrierPos[b], new Rectangle(0,0,64, 64), Color.White, 0f, Vector2.Zero, 1.5f, SpriteEffects.None, 0f);
+
+            }
 
 
 
