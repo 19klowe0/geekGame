@@ -6,6 +6,8 @@ namespace geekGame
 {
     public class Game1 : Game
     {
+
+        //changing this to understand version control better!
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
